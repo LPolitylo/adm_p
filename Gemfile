@@ -68,3 +68,9 @@ gem "devise"
 
 gem 'cancancan'
 gem "rolify"
+
+
+gem 'sinatra'
+gem 'slim'
+gem 'sass'
+gem 'sinatra-flash'
