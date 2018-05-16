@@ -9,7 +9,7 @@ module SongHelpers
   end
 
   def find_song
-    Song.where(params[:id]).take!
+    Song.where(id: params[:id]).take!
   end
 
   def create_song
