@@ -1,8 +1,39 @@
 require 'sinatra/base'
+require 'sinatra/flash'
 require 'slim'
 require 'sass'
 
+module SongHelpers
+  def find_songs
+    @songs = Song.all
+  end
+
+  def find_song
+    Song.where(params[:id]).take!
+  end
+
+  def create_song
+    @song = Song.create(params[:song])
+  end
+end
+
+module AuthHelpers
+  def authorized?
+    env["warden"] && env["warden"].authenticated?
+  end
+
+  def protected!
+    halt 401,slim(:unauthorized) unless authorized?
+  end
+
+  def log_out!
+    env["warden"] && env["warden"].logout
+  end
+end
+
 class MySinApp < Sinatra::Base
+  helpers AuthHelpers
+
   before do
     set_title
   end
@@ -25,12 +56,6 @@ class MySinApp < Sinatra::Base
   set :public_folder, "#{Rails.root}/app/assets/sinatra/public"
   set :views, "#{Rails.root}/app/views/sinatra/views"
 
-
-  get '/logout' do
-    session.clear
-    redirect to('/login')
-  end
-
   get '/' do
     slim :home
   end
@@ -40,8 +65,9 @@ class MySinApp < Sinatra::Base
     slim :about
   end
 
-  get '/contact' do
-    slim :contact
+  get '/logout' do
+    log_out!
+    redirect to('/')
   end
 
   not_found do
@@ -54,30 +80,16 @@ class MySinApp < Sinatra::Base
   end
 end
 
-module SongHelpers
-  def find_songs
-    @songs = Song.all
-  end
-
-  def find_song
-    Song.where(params[:id]).take!
-  end
-
-  def create_song
-    @song = Song.new(params[:song]).save!
-  end
-end
-
 
 class SongController < Sinatra::Base
   enable :method_override
-  register Sinatra::Flash  
-  
+  register Sinatra::Flash
+
   get('/styles.css'){ scss :styles }
   set :public_folder, "#{Rails.root}/app/assets/sinatra/public"
   set :views, "#{Rails.root}/app/views/sinatra/views"
 
-  helpers SongHelpers 
+  helpers SongHelpers, AuthHelpers
 
   before do
     set_title
@@ -104,12 +116,12 @@ class SongController < Sinatra::Base
 
   get '/new' do
     protected!
-    halt(401,'Not Authorized') unless session[:admin]
     @song = Song.new
     slim :new_song
   end
 
   get '/:id' do 
+    protected!
     @song = find_song
     slim :show_song
   end
