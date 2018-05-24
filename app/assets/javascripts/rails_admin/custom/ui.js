@@ -29,7 +29,7 @@ $(function () {
  });
  
  for (var i = 0; i <= array_menu.length; i++) {
- $('.sub-menu-' + i).wrapAll("<div class="sub-menu-container"></div>");
+ $('.sub-menu-' + i).wrapAll('<div class="sub-menu-container"></div>');
  }
  
  $('.sub-menu-container').hide();
