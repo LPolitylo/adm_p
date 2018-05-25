@@ -3,8 +3,8 @@ class SongController < Sinatra::Base
   register Sinatra::Flash
 
   get('/styles.css'){ scss :styles }
-  set :public_folder, "#{Rails.root}/app/lib/sinatra/public"
-  set :views, "#{Rails.root}/app/lib/sinatra/views"
+  set :public_folder, "#{SINATRA_PATH}/public"
+  set :views, "#{SINATRA_PATH}/views"
 
   helpers SongHelpers, AuthHelpers
 
