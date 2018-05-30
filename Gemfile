@@ -74,7 +74,9 @@ gem 'cancancan'
 gem "rolify"
 
 
-gem 'sinatra'
-gem 'slim'
-gem 'sass'
-gem 'sinatra-flash'
+gem "osiar", :git => "https://github.com/LPolitylo/osiar.git"
+
+# gem 'sinatra', :require => false
+# gem 'slim', :require => false
+# gem 'sass', :require => false
+# gem 'sinatra-flash', :require => false
